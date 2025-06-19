@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inejih's Epic Task Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1);
+            color: #fff;
+            min-height: 100vh;
+            padding-top: 80px;
+            overflow-x: hidden;
+            animation: colorShift 10s infinite alternate;
+        }
+        @keyframes colorShift {
+            0% { background: linear-gradient(135deg, #ff6b6b, #4ecdc4, #45b7d1); }
+            50% { background: linear-gradient(135deg, #4ecdc4, #45b7d1, #ff6b6b); }
+            100% { background: linear-gradient(135deg, #45b7d1, #ff6b6b, #4ecdc4); }
+        }
+        .navbar {
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 3px solid #4ecdc4;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+        }
+        .navbar-brand, .nav-link {
+            color: #fff !important;
+            transition: color 0.3s;
+        }
+        .nav-link:hover {
+            color: #ff6b6b !important;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid #4ecdc4;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: scale(1.05);
+        }
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid #ff6b6b;
+            object-fit: cover;
+        }
+        .task-item {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transition: background 0.3s;
+        }
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        .alert-box {
+            position: fixed;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background: #45b7d1;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            animation: slideInOut 5s infinite;
+            font-size: 1.2em;
+            text-align: center;
+        }
+        @keyframes slideInOut {
+            0% { top: -50px; opacity: 0; }
+            10% { top: 100px; opacity: 1; }
+            90% { top: 100px; opacity: 1; }
+            100% { top: -50px; opacity: 0; }
+        }
+        .sidebar {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            position: sticky;
+            top: 90px;
+        }
+        @media (max-width: 768px) {
+            .profile-img { width: 90px; height: 90px; }
+            .card { padding: 15px; }
+            .alert-box { top: 70px; padding: 10px 20px; font-size: 1em; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Inejih's Task Hub</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="#profile">Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#tasks">Tasks</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div id="alert-box" class="alert-box" style="display: none;"></div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-12">
+                <div class="sidebar">
+                    <h2 class="text-center mb-4">Profile</h2>
+                    <div class="text-center mb-3">
+                        <img src="https://via.placeholder.com/120" alt="Inejih's Profile" class="profile-img mx-auto d-block">
+                    </div>
+                    <h4 class="text-center">Inejih Ould Sid Mhamed</h4>
+                    <p class="text-center mb-2">Student L2 – Dev Informatique</p>
+                    <p class="text-center">Aiming for greatness!</p>
+                    <p class="text-center mt-3">Points: <span id="totalPoints">0</span></p>
+                </div>
+            </div>
+
+            <div class="col-lg-9 col-md-12">
+                <div id="profile" class="card mb-4">
+                    <h2 class="text-center">Welcome, Inejih!</h2>
+                    <p class="text-center">Your journey to success starts now! 🌟</p>
+                    <p class="text-center text-muted">Time: 10:07 PM GMT, June 19, 2025</p>
+                    <p class="text-center text-muted">92 days remaining</p>
+                </div>
+
+                <div id="tasks" class="card">
+                    <h2>Tasks</h2>
+                    <div id="tasksList"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+    <script>
+        const tasks = [
+            { id: 1, title: 'Understand what I did in the Laravel project', status: 'pending', deadline: '2025-06-25', points: 10 },
+            { id: 2, title: 'Start planning how to be the 🥇 place in S5', status: 'pending', deadline: '2025-06-30', points: 15 },
+            { id: 3, title: 'Start searching for the internship', status: 'pending', deadline: '2025-07-05', points: 20 },
+            { id: 4, title: 'Do the JPI project PowerPoint presentation', status: 'pending', deadline: '2025-07-10', points: 25 },
+            { id: 5, title: 'Start learning editing to boost my social media channels from 4k to 100k in one month', status: 'pending', deadline: '2025-07-15', points: 30 },
+            { id: 6, title: 'Start filming the comeback video (7-8 months without posting)', status: 'pending', deadline: '2025-06-20', points: 20 },
+            { id: 7, title: 'Start transforming my French level from A2 to B2 or C1', status: 'pending', deadline: '2025-07-01', points: 15 },
+            { id: 8, title: 'Start building my revolutionary thought prediction app', status: 'pending', deadline: '2025-08-01', points: 40 },
+            { id: 9, title: 'Start quitting any bad habits and replace them with good ones', status: 'pending', deadline: '2025-06-30', points: 10 },
+            { id: 10, title: 'Read a French & English book every week', status: 'pending', deadline: '2025-09-19', points: 20 },
+            { id: 11, title: 'Start planning for my graduation year L3 ISCAE Development Informatique - what\'s next', status: 'pending', deadline: '2025-08-15', points: 25 },
+            { id: 12, title: 'Do my portfolio website project and upload it to GitHub', status: 'pending', deadline: '2025-07-20', points: 30 },
+            { id: 13, title: 'Learn a new language', status: 'pending', deadline: '2025-09-01', points: 20 },
+            { id: 14, title: 'Get past the IELTS TOEFL exams', status: 'pending', deadline: '2025-09-15', points: 35 },
+            { id: 15, title: 'Plan a whole course to go through during the 2025-2026 studying year', status: 'pending', deadline: '2025-08-10', points: 25 },
+            { id: 16, title: 'Do more projects to strengthen myself in programming critical thinking', status: 'pending', deadline: '2025-09-19', points: 30 },
+            { id: 17, title: 'Learn a new small effective non-tracking time skill from now until the vacation ends', status: 'pending', deadline: '2025-09-19', points: 15 }
+        ];
+
+        const motivationalAlerts = [
+            "You’re unstoppable, Inejih! Keep pushing!",
+            "Every task you finish is a step to greatness!",
+            "Your focus is inspiring—stay strong!",
+            "Success is near—keep the energy up!",
+            "You’re a coding star in the making!",
+            "Your hard work will pay off—don’t stop now!",
+            "Inejih, you’re destined for greatness—keep going!",
+            "Each goal you crush builds your legend!",
+            "You’re a force of nature—stay motivated!",
+            "Your dedication shines—keep it up!",
+            "You’re rewriting your future—stay focused!",
+            "Inejih, your potential is limitless—push harder!",
+            "Every step forward is a victory—celebrate it!",
+            "You’re a coding genius—keep creating!",
+            "Your journey inspires others—keep leading!",
+            "Success is yours to grab—go for it!",
+            "You’re unstoppable—let’s conquer today!",
+            "Your dreams are within reach—keep charging!",
+            "Inejih, you’re a warrior—stay relentless!",
+            "Every task is a trophy—claim it now!",
+            "Your brilliance is shining—keep it glowing!"
+        ];
+
+        const deadlineAlerts = [
+            "Check tasks due in 7 days—act now!",
+            "Urgent: 6 days left—go hard, Inejih!",
+            "5 days left—don’t let it slip!",
+            "Hurry, 4 days until a deadline—push forward!",
+            "3 days left—time to go hard, champ!",
+            "2 days to go—intensify your effort now!",
+            "1 day left—finish it today, go all out!",
+            "Deadline tomorrow—do it now or regret it!",
+            "Last chance—due tomorrow, go hard!",
+            "Today’s the day—complete your task now!"
+        ];
+
+        let storedTasks = JSON.parse(localStorage.getItem('tasks')) || tasks;
+        let totalPoints = parseInt(localStorage.getItem('totalPoints')) || 0;
+
+        function saveData() {
+            localStorage.setItem('tasks', JSON.stringify(storedTasks));
+            localStorage.setItem('totalPoints', totalPoints);
+        }
+
+        function showAlert(message) {
+            const alertBox = document.getElementById('alert-box');
+            alertBox.textContent = message;
+            alertBox.style.display = 'block';
+            setTimeout(() => { alertBox.style.display = 'none'; }, 4500);
+        }
+
+        function updatePoints() {
+            document.getElementById('totalPoints').textContent = totalPoints;
+        }
+
+        function renderTasks() {
+            const tasksList = document.getElementById('tasksList');
+            tasksList.innerHTML = storedTasks.map(task => `
+                <div class="task-item d-flex align-items-center justify-content-between">
+                    <div>
+                        <input type="checkbox" class="form-check-input me-2" id="task-${task.id}" ${task.status === 'done' ? 'checked' : ''} onchange="toggleTask(${task.id}, this.checked)">
+                        <label for="task-${task.id}" class="form-check-label">${task.title}</label>
+                    </div>
+                    <small class="text-muted">${new Date(task.deadline).toLocaleDateString()}</small>
+                </div>
+            `).join('');
+        }
+
+        function toggleTask(id, checked) {
+            storedTasks.forEach(task => {
+                if (task.id === id) {
+                    task.status = checked ? 'done' : 'pending';
+                    if (checked) {
+                        totalPoints += task.points;
+                        showAlert(`Task Completed! +${task.points} points for ${task.title}! 🎉`);
+                    }
+                }
+            });
+            saveData();
+            renderTasks();
+            updatePoints();
+            checkDeadlinesAndAlerts();
+        }
+
+        function checkDeadlinesAndAlerts() {
+            const now = new Date('2025-06-19T22:07:00Z'); // 10:07 PM GMT
+            const urgentTasks = storedTasks.filter(t => t.status !== 'done' && new Date(t.deadline) - now < 7 * 24 * 60 * 60 * 1000);
+            const todayTasks = storedTasks.filter(t => t.status !== 'done' && new Date(t.deadline).toDateString() === now.toDateString());
+            const tomorrow = new Date(now);
+            tomorrow.setDate(now.getDate() + 1);
+            const tomorrowTasks = storedTasks.filter(t => t.status !== 'done' && new Date(t.deadline).toDateString() === tomorrow.toDateString());
+
+            if (tomorrowTasks.length > 0) {
+                tomorrowTasks.forEach(task => showAlert(`Plan '${task.title}' for tomorrow—go hard! ⏰`));
+            } else if (urgentTasks.length > 0) {
+                showAlert(deadlineAlerts[Math.floor(Math.random() * deadlineAlerts.length)]);
+            } else {
+                showAlert(motivationalAlerts[Math.floor(Math.random() * motivationalAlerts.length)]);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderTasks();
+            updatePoints();
+            setInterval(checkDeadlinesAndAlerts, 5000); // Every 5 seconds
+            checkDeadlinesAndAlerts();
+        });
+    </script>
